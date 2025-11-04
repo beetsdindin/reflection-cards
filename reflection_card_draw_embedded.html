@@ -1,0 +1,194 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Reflection Card Draw — Embedded</title>
+<style>
+  :root { --bg:#0b1020; --fg:#eef2ff; --muted:#aab3c5; --card:#121933; --accent:#7aa2f7; }
+  * { box-sizing: border-box; }
+  body { margin:0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; background: var(--bg); color: var(--fg); }
+  header { padding: 16px 20px; border-bottom: 1px solid #233; display:flex; align-items:center; gap:12px; justify-content:space-between; }
+  header h1 { font-size: 18px; margin:0; letter-spacing: .3px; }
+  main { max-width: 980px; margin: 0 auto; padding: 20px; display: grid; gap: 16px; }
+  .controls { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); align-items: end; }
+  label { font-size: 12px; color: var(--muted); display:block; margin-bottom:6px; }
+  select, button { width: 100%; padding: 10px 12px; border-radius: 12px; border: 1px solid #2a3557; background: #0f1630; color: var(--fg); }
+  button { cursor: pointer; background: linear-gradient(180deg, #1a2550, #10193a); border: 1px solid #334073; }
+  button:hover { border-color: var(--accent); }
+  .card { background: var(--card); border: 1px solid #23314f; border-radius: 16px; padding: 20px; box-shadow: 0 10px 30px rgba(0,0,0,.25); }
+  .meta { display:flex; gap:8px; flex-wrap: wrap; margin-bottom: 10px; }
+  .pill { font-size: 12px; padding: 6px 10px; border-radius: 999px; border: 1px solid #334073; color: #cbd5ff; }
+  .prompt { font-size: 20px; line-height: 1.4; margin: 6px 0 12px 0; }
+  .empty { color: var(--muted); }
+  .row { display:flex; gap:8px; flex-wrap: wrap; }
+  .small { font-size: 12px; color: var(--muted); }
+  footer { padding: 10px 20px 30px; color: var(--muted); font-size: 12px; text-align:center; }
+</style>
+</head>
+<body>
+  <header>
+    <h1>Reflection Card Draw — Embedded</h1>
+    <div class="small">150 prompts • Offline-ready</div>
+  </header>
+  <main>
+    <section class="controls">
+      <div>
+        <label for="domainSel">Domain</label>
+        <select id="domainSel">
+          <option value="any">Any</option>
+          <option value="academic">Academic</option>
+          <option value="non_academic">Non-Academic</option>
+          <option value="cross_domain">Cross-Domain</option>
+        </select>
+      </div>
+      <div>
+        <label for="stemSel">Stem</label>
+        <select id="stemSel">
+          <option value="any">Any</option>
+          <option value="I am">I am</option>
+          <option value="I can">I can</option>
+          <option value="I have">I have</option>
+        </select>
+      </div>
+      <div>
+        <label for="valueSel">Value</label>
+        <select id="valueSel">
+          <option value="any">Any</option>
+          <option value="好学">好学</option>
+          <option value="力行">力行</option>
+          <option value="知耻">知耻</option>
+          <option value="自强">自强</option>
+        </select>
+      </div>
+      <div>
+        <label for="compSel">21CC</label>
+        <select id="compSel">
+          <option value="any">Any</option>
+          <option value="Civic Literacy, Global Awareness & Cross-Cultural Skills">Civic Literacy, Global Awareness & Cross-Cultural Skills</option>
+          <option value="Critical & Inventive Thinking">Critical & Inventive Thinking</option>
+          <option value="Communication, Collaboration & Information Skills">Communication, Collaboration & Information Skills</option>
+          <option value="Self-Management">Self-Management</option>
+          <option value="Social & Emotional Competence">Social & Emotional Competence</option>
+        </select>
+      </div>
+      <div>
+        <button id="drawBtn">Draw Card</button>
+      </div>
+      <div>
+        <button id="clearBtn">Clear</button>
+      </div>
+    </section>
+
+    <section id="cardSlot" class="card">
+      <p class="empty">Use the controls above and click <b>Draw Card</b> to get a prompt.</p>
+    </section>
+
+    <section class="row">
+      <button id="copyBtn">Copy Prompt</button>
+      <button id="nextBtn">Draw Another</button>
+      <span class="small" id="copyMsg"></span>
+    </section>
+  </main>
+  <footer>
+    Works fully offline. Share this single file with teachers to use anywhere.
+  </footer>
+
+<script>
+const EMBEDDED_DATA = {"academic":[{"id":"A001","stem":"I am","prompt":"How am I showing curiosity in learning this term?","value":"好学","competency":"Civic Literacy, Global Awareness & Cross-Cultural Skills"},{"id":"A002","stem":"I can","prompt":"How can I get better at connecting ideas across subjects next week?","value":"力行","competency":"Critical & Inventive Thinking"},{"id":"A003","stem":"I have","prompt":"What evidence do I have of asking better questions this month?","value":"知耻","competency":"Communication, Collaboration & Information Skills"},{"id":"A004","stem":"I am","prompt":"When am I at my best with explaining tough concepts clearly?","value":"自强","competency":"Self-Management"},{"id":"A005","stem":"I can","prompt":"What is one step I can take to build using evidence in answers?","value":"好学","competency":"Social & Emotional Competence"},{"id":"A006","stem":"I have","prompt":"When have I used planning my study time well?","value":"力行","competency":"Civic Literacy, Global Awareness & Cross-Cultural Skills"},{"id":"A007","stem":"I am","prompt":"How am I showing persevering through hard tasks this term?","value":"知耻","competency":"Critical & Inventive Thinking"},{"id":"A008","stem":"I can","prompt":"How can I use feedback to strengthen reflecting on mistakes?","value":"自强","competency":"Communication, Collaboration & Information Skills"},{"id":"A009","stem":"I have","prompt":"What have I done recently that shows trying different strategies?","value":"好学","competency":"Self-Management"},{"id":"A010","stem":"I am","prompt":"When do I notice noticing patterns in problems in myself?","value":"力行","competency":"Social & Emotional Competence"},{"id":"A011","stem":"I can","prompt":"What strategy can I try to improve building academic vocabulary?","value":"知耻","competency":"Civic Literacy, Global Awareness & Cross-Cultural Skills"},{"id":"A012","stem":"I have","prompt":"What have I done recently that shows checking my understanding?","value":"自强","competency":"Critical & Inventive Thinking"},{"id":"A013","stem":"I am","prompt":"How am I showing collaborating in group work this term?","value":"好学","competency":"Communication, Collaboration & Information Skills"},{"id":"A014","stem":"I can","prompt":"How can I get better at listening actively in class next week?","value":"力行","competency":"Self-Management"},{"id":"A015","stem":"I have","prompt":"When have I used note-taking that works well?","value":"知耻","competency":"Social & Emotional Competence"},{"id":"A016","stem":"I am","prompt":"When am I at my best with preparing for assessments?","value":"自强","competency":"Civic Literacy, Global Awareness & Cross-Cultural Skills"},{"id":"A017","stem":"I can","prompt":"How can I use feedback to strengthen managing exam stress?","value":"好学","competency":"Critical & Inventive Thinking"},{"id":"A018","stem":"I have","prompt":"When did self-correcting errors help me succeed?","value":"力行","competency":"Communication, Collaboration & Information Skills"},{"id":"A019","stem":"I am","prompt":"How am I showing summarising key ideas this term?","value":"知耻","competency":"Self-Management"},{"id":"A020","stem":"I can","prompt":"How can I use feedback to strengthen applying concepts to real life?","value":"自强","competency":"Social & Emotional Competence"},{"id":"A021","stem":"I have","prompt":"When have I used evaluating sources well?","value":"好学","competency":"Civic Literacy, Global Awareness & Cross-Cultural Skills"},{"id":"A022","stem":"I am","prompt":"When do I notice designing fair tests in myself?","value":"力行","competency":"Critical & Inventive Thinking"},{"id":"A023","stem":"I can","prompt":"What strategy can I try to improve interpreting data?","value":"知耻","competency":"Communication, Collaboration & Information Skills"},{"id":"A024","stem":"I have","prompt":"When have I used giving constructive peer feedback well?","value":"自强","competency":"Self-Management"},{"id":"A025","stem":"I am","prompt":"How am I practising receiving feedback well today?","value":"好学","competency":"Social & Emotional Competence"},{"id":"A026","stem":"I can","prompt":"How can I use feedback to strengthen timeboxing and focus?","value":"力行","competency":"Civic Literacy, Global Awareness & Cross-Cultural Skills"},{"id":"A027","stem":"I have","prompt":"What evidence do I have of goal-setting for learning this month?","value":"知耻","competency":"Critical & Inventive Thinking"},{"id":"A028","stem":"I am","prompt":"How am I showing revision planning this term?","value":"自强","competency":"Communication, Collaboration & Information Skills"},{"id":"A029","stem":"I can","prompt":"What is one step I can take to build transfer of learning?","value":"好学","competency":"Self-Management"},{"id":"A030","stem":"I have","prompt":"What have I learned about metacognitive reflection from experience?","value":"力行","competency":"Social & Emotional Competence"},{"id":"A031","stem":"I am","prompt":"In what ways am I growing in growth mindset?","value":"知耻","competency":"Civic Literacy, Global Awareness & Cross-Cultural Skills"},{"id":"A032","stem":"I can","prompt":"How can I apply confidence in presentations in my next task?","value":"自强","competency":"Critical & Inventive Thinking"},{"id":"A033","stem":"I have","prompt":"When have I used discipline in routines well?","value":"好学","competency":"Communication, Collaboration & Information Skills"},{"id":"A034","stem":"I am","prompt":"When am I at my best with accuracy and checking work?","value":"力行","competency":"Self-Management"},{"id":"A035","stem":"I can","prompt":"How can I apply independent learning in my next task?","value":"知耻","competency":"Social & Emotional Competence"},{"id":"A036","stem":"I have","prompt":"What have I done recently that shows seeking help early?","value":"自强","competency":"Civic Literacy, Global Awareness & Cross-Cultural Skills"},{"id":"A037","stem":"I am","prompt":"How am I showing tracking progress this term?","value":"好学","competency":"Critical & Inventive Thinking"},{"id":"A038","stem":"I can","prompt":"What strategy can I try to improve prioritising tasks?","value":"力行","competency":"Communication, Collaboration & Information Skills"},{"id":"A039","stem":"I have","prompt":"What have I done recently that shows questioning assumptions?","value":"知耻","competency":"Self-Management"},{"id":"A040","stem":"I am","prompt":"In what ways am I growing in creative problem-solving?","value":"自强","competency":"Social & Emotional Competence"},{"id":"A041","stem":"I can","prompt":"How can I apply linking cause and effect in my next task?","value":"好学","competency":"Civic Literacy, Global Awareness & Cross-Cultural Skills"},{"id":"A042","stem":"I have","prompt":"When did forming balanced arguments help me succeed?","value":"力行","competency":"Critical & Inventive Thinking"},{"id":"A043","stem":"I am","prompt":"In what ways am I growing in ethical use of information?","value":"知耻","competency":"Communication, Collaboration & Information Skills"},{"id":"A044","stem":"I can","prompt":"How can I get better at visualising ideas next week?","value":"自强","competency":"Self-Management"},{"id":"A045","stem":"I have","prompt":"What have I learned about building models or explanations from experience?","value":"好学","competency":"Social & Emotional Competence"},{"id":"A046","stem":"I am","prompt":"When do I notice critique and improvement in myself?","value":"力行","competency":"Civic Literacy, Global Awareness & Cross-Cultural Skills"},{"id":"A047","stem":"I can","prompt":"How can I get better at resilience after setbacks next week?","value":"知耻","competency":"Critical & Inventive Thinking"},{"id":"A048","stem":"I have","prompt":"What have I learned about productive struggle from experience?","value":"自强","competency":"Communication, Collaboration & Information Skills"},{"id":"A049","stem":"I am","prompt":"How am I showing reading closely this term?","value":"好学","competency":"Self-Management"},{"id":"A050","stem":"I can","prompt":"How can I use feedback to strengthen writing clearly?","value":"力行","competency":"Social & Emotional Competence"}],"non_academic":[{"id":"N001","stem":"I am","prompt":"In what ways am I growing in integrity in daily choices?","value":"好学","competency":"Civic Literacy, Global Awareness & Cross-Cultural Skills"},{"id":"N002","stem":"I can","prompt":"How can I use feedback to strengthen taking responsibility?","value":"力行","competency":"Critical & Inventive Thinking"},{"id":"N003","stem":"I have","prompt":"What evidence do I have of showing empathy to others this month?","value":"知耻","competency":"Communication, Collaboration & Information Skills"},{"id":"N004","stem":"I am","prompt":"When do I notice managing emotions in myself?","value":"自强","competency":"Self-Management"},{"id":"N005","stem":"I can","prompt":"What is one step I can take to build resolving conflicts?","value":"好学","competency":"Social & Emotional Competence"},{"id":"N006","stem":"I have","prompt":"What have I done recently that shows being a reliable teammate?","value":"力行","competency":"Civic Literacy, Global Awareness & Cross-Cultural Skills"},{"id":"N007","stem":"I am","prompt":"How am I showing balancing school and rest this term?","value":"知耻","competency":"Critical & Inventive Thinking"},{"id":"N008","stem":"I can","prompt":"What is one step I can take to build self-discipline in routines?","value":"自强","competency":"Communication, Collaboration & Information Skills"},{"id":"N009","stem":"I have","prompt":"What evidence do I have of supporting a friend this month?","value":"好学","competency":"Self-Management"},{"id":"N010","stem":"I am","prompt":"How am I showing active listening with peers this term?","value":"力行","competency":"Social & Emotional Competence"},{"id":"N011","stem":"I can","prompt":"What is one step I can take to build standing up for what is right?","value":"知耻","competency":"Civic Literacy, Global Awareness & Cross-Cultural Skills"},{"id":"N012","stem":"I have","prompt":"What have I done recently that shows gratitude in relationships?","value":"自强","competency":"Critical & Inventive Thinking"},{"id":"N013","stem":"I am","prompt":"How am I practising respecting differences today?","value":"好学","competency":"Communication, Collaboration & Information Skills"},{"id":"N014","stem":"I can","prompt":"How can I apply leading by example in my next task?","value":"力行","competency":"Self-Management"},{"id":"N015","stem":"I have","prompt":"What have I learned about seeking help when needed from experience?","value":"知耻","competency":"Social & Emotional Competence"},{"id":"N016","stem":"I am","prompt":"In what ways am I growing in care for school spaces?","value":"自强","competency":"Civic Literacy, Global Awareness & Cross-Cultural Skills"},{"id":"N017","stem":"I can","prompt":"What is one step I can take to build time management beyond class?","value":"好学","competency":"Critical & Inventive Thinking"},{"id":"N018","stem":"I have","prompt":"What evidence do I have of digital citizenship this month?","value":"力行","competency":"Communication, Collaboration & Information Skills"},{"id":"N019","stem":"I am","prompt":"In what ways am I growing in kindness in small actions?","value":"知耻","competency":"Self-Management"},{"id":"N020","stem":"I can","prompt":"What is one step I can take to build courage in new situations?","value":"自强","competency":"Social & Emotional Competence"},{"id":"N021","stem":"I have","prompt":"What evidence do I have of well-being and self-care this month?","value":"好学","competency":"Civic Literacy, Global Awareness & Cross-Cultural Skills"},{"id":"N022","stem":"I am","prompt":"How am I showing reflecting after mistakes this term?","value":"力行","competency":"Critical & Inventive Thinking"},{"id":"N023","stem":"I can","prompt":"How can I use feedback to strengthen giving apologies that repair?","value":"知耻","competency":"Communication, Collaboration & Information Skills"},{"id":"N024","stem":"I have","prompt":"When have I used including others well?","value":"自强","competency":"Self-Management"},{"id":"N025","stem":"I am","prompt":"When do I notice managing commitments in myself?","value":"好学","competency":"Social & Emotional Competence"},{"id":"N026","stem":"I can","prompt":"What is one step I can take to build service to the community?","value":"力行","competency":"Civic Literacy, Global Awareness & Cross-Cultural Skills"},{"id":"N027","stem":"I have","prompt":"When have I used keeping promises well?","value":"知耻","competency":"Critical & Inventive Thinking"},{"id":"N028","stem":"I am","prompt":"How am I practising peer mentoring today?","value":"自强","competency":"Communication, Collaboration & Information Skills"},{"id":"N029","stem":"I can","prompt":"What strategy can I try to improve positive online behaviour?","value":"好学","competency":"Self-Management"},{"id":"N030","stem":"I have","prompt":"What evidence do I have of speaking up respectfully this month?","value":"力行","competency":"Social & Emotional Competence"},{"id":"N031","stem":"I am","prompt":"When do I notice handling disappointment in myself?","value":"知耻","competency":"Civic Literacy, Global Awareness & Cross-Cultural Skills"},{"id":"N032","stem":"I can","prompt":"What is one step I can take to build managing stress?","value":"自强","competency":"Critical & Inventive Thinking"},{"id":"N033","stem":"I have","prompt":"What evidence do I have of collaborating across CCAs this month?","value":"好学","competency":"Communication, Collaboration & Information Skills"},{"id":"N034","stem":"I am","prompt":"How am I showing honouring boundaries this term?","value":"力行","competency":"Self-Management"},{"id":"N035","stem":"I can","prompt":"What is one step I can take to build responding to feedback?","value":"知耻","competency":"Social & Emotional Competence"},{"id":"N036","stem":"I have","prompt":"What have I done recently that shows setting personal goals?","value":"自强","competency":"Civic Literacy, Global Awareness & Cross-Cultural Skills"},{"id":"N037","stem":"I am","prompt":"In what ways am I growing in planning finances (basic)?","value":"好学","competency":"Critical & Inventive Thinking"},{"id":"N038","stem":"I can","prompt":"What strategy can I try to improve helping at home?","value":"力行","competency":"Communication, Collaboration & Information Skills"},{"id":"N039","stem":"I have","prompt":"What evidence do I have of mindful use of time this month?","value":"知耻","competency":"Self-Management"},{"id":"N040","stem":"I am","prompt":"How am I showing celebrating others' success this term?","value":"自强","competency":"Social & Emotional Competence"},{"id":"N041","stem":"I can","prompt":"What is one step I can take to build forgiveness and moving on?","value":"好学","competency":"Civic Literacy, Global Awareness & Cross-Cultural Skills"},{"id":"N042","stem":"I have","prompt":"When did caring for the environment help me succeed?","value":"力行","competency":"Critical & Inventive Thinking"},{"id":"N043","stem":"I am","prompt":"In what ways am I growing in self-advocacy?","value":"知耻","competency":"Communication, Collaboration & Information Skills"},{"id":"N044","stem":"I can","prompt":"What is one step I can take to build attention to safety?","value":"自强","competency":"Self-Management"},{"id":"N045","stem":"I have","prompt":"What have I learned about resilience in setbacks from experience?","value":"好学","competency":"Social & Emotional Competence"},{"id":"N046","stem":"I am","prompt":"How am I practising initiative in daily life today?","value":"力行","competency":"Civic Literacy, Global Awareness & Cross-Cultural Skills"},{"id":"N047","stem":"I can","prompt":"What strategy can I try to improve responsible risk-taking?","value":"知耻","competency":"Critical & Inventive Thinking"},{"id":"N048","stem":"I have","prompt":"When have I used curiosity about people well?","value":"自强","competency":"Communication, Collaboration & Information Skills"},{"id":"N049","stem":"I am","prompt":"In what ways am I growing in resisting peer pressure?","value":"好学","competency":"Self-Management"},{"id":"N050","stem":"I can","prompt":"What is one step I can take to build purpose in choices?","value":"力行","competency":"Social & Emotional Competence"}],"cross_domain":[{"id":"C001","stem":"I am","prompt":"When am I at my best with applying class learning in life?","value":"好学","competency":"Civic Literacy, Global Awareness & Cross-Cultural Skills"},{"id":"C002","stem":"I can","prompt":"How can I use feedback to strengthen connecting learning to CCA?","value":"力行","competency":"Critical & Inventive Thinking"},{"id":"C003","stem":"I have","prompt":"When did solving real problems with classmates help me succeed?","value":"知耻","competency":"Communication, Collaboration & Information Skills"},{"id":"C004","stem":"I am","prompt":"In what ways am I growing in cross-cultural understanding?","value":"自强","competency":"Self-Management"},{"id":"C005","stem":"I can","prompt":"How can I use feedback to strengthen seeing multiple perspectives?","value":"好学","competency":"Social & Emotional Competence"},{"id":"C006","stem":"I have","prompt":"What have I learned about ethical decision-making from experience?","value":"力行","competency":"Civic Literacy, Global Awareness & Cross-Cultural Skills"},{"id":"C007","stem":"I am","prompt":"When do I notice communicating ideas to wider audiences in myself?","value":"知耻","competency":"Critical & Inventive Thinking"},{"id":"C008","stem":"I can","prompt":"What strategy can I try to improve leading small initiatives?","value":"自强","competency":"Communication, Collaboration & Information Skills"},{"id":"C009","stem":"I have","prompt":"What evidence do I have of designing solutions that help others this month?","value":"好学","competency":"Self-Management"},{"id":"C010","stem":"I am","prompt":"When am I at my best with learning from community feedback?","value":"力行","competency":"Social & Emotional Competence"},{"id":"C011","stem":"I can","prompt":"What is one step I can take to build global issues that matter to me?","value":"知耻","competency":"Civic Literacy, Global Awareness & Cross-Cultural Skills"},{"id":"C012","stem":"I have","prompt":"When did using data to inform actions help me succeed?","value":"自强","competency":"Critical & Inventive Thinking"},{"id":"C013","stem":"I am","prompt":"How am I practising reflecting on impact today?","value":"好学","competency":"Communication, Collaboration & Information Skills"},{"id":"C014","stem":"I can","prompt":"How can I get better at adapting plans after setbacks next week?","value":"力行","competency":"Self-Management"},{"id":"C015","stem":"I have","prompt":"What have I done recently that shows creative collaboration?","value":"知耻","competency":"Social & Emotional Competence"},{"id":"C016","stem":"I am","prompt":"How am I showing civic participation in school this term?","value":"自强","competency":"Civic Literacy, Global Awareness & Cross-Cultural Skills"},{"id":"C017","stem":"I can","prompt":"What is one step I can take to build building trust in teams?","value":"好学","competency":"Critical & Inventive Thinking"},{"id":"C018","stem":"I have","prompt":"When have I used empathy in group decisions well?","value":"力行","competency":"Communication, Collaboration & Information Skills"},{"id":"C019","stem":"I am","prompt":"How am I practising taking informed risks today?","value":"知耻","competency":"Self-Management"},{"id":"C020","stem":"I can","prompt":"How can I use feedback to strengthen planning next steps with evidence?","value":"自强","competency":"Social & Emotional Competence"},{"id":"C021","stem":"I have","prompt":"What have I done recently that shows presenting to different audiences?","value":"好学","competency":"Civic Literacy, Global Awareness & Cross-Cultural Skills"},{"id":"C022","stem":"I am","prompt":"How am I practising listening to diverse voices today?","value":"力行","competency":"Critical & Inventive Thinking"},{"id":"C023","stem":"I can","prompt":"What strategy can I try to improve linking values to actions?","value":"知耻","competency":"Communication, Collaboration & Information Skills"},{"id":"C024","stem":"I have","prompt":"When did evaluating consequences help me succeed?","value":"自强","competency":"Self-Management"},{"id":"C025","stem":"I am","prompt":"How am I practising transferring skills across contexts today?","value":"好学","competency":"Social & Emotional Competence"},{"id":"C026","stem":"I can","prompt":"How can I use feedback to strengthen communicating across cultures?","value":"力行","competency":"Civic Literacy, Global Awareness & Cross-Cultural Skills"},{"id":"C027","stem":"I have","prompt":"What evidence do I have of aligning goals with community needs this month?","value":"知耻","competency":"Critical & Inventive Thinking"},{"id":"C028","stem":"I am","prompt":"When do I notice co-creating with partners in myself?","value":"自强","competency":"Communication, Collaboration & Information Skills"},{"id":"C029","stem":"I can","prompt":"How can I get better at handling ambiguity next week?","value":"好学","competency":"Self-Management"},{"id":"C030","stem":"I have","prompt":"What have I done recently that shows iterating based on reflection?","value":"力行","competency":"Social & Emotional Competence"},{"id":"C031","stem":"I am","prompt":"When do I notice connecting history to today in myself?","value":"知耻","competency":"Civic Literacy, Global Awareness & Cross-Cultural Skills"},{"id":"C032","stem":"I can","prompt":"How can I apply using science/tech responsibly in my next task?","value":"自强","competency":"Critical & Inventive Thinking"},{"id":"C033","stem":"I have","prompt":"What evidence do I have of financial decisions with care this month?","value":"好学","competency":"Communication, Collaboration & Information Skills"},{"id":"C034","stem":"I am","prompt":"How am I showing media literacy in real life this term?","value":"力行","competency":"Self-Management"},{"id":"C035","stem":"I can","prompt":"How can I apply time management across roles in my next task?","value":"知耻","competency":"Social & Emotional Competence"},{"id":"C036","stem":"I have","prompt":"What have I learned about well-being during big projects from experience?","value":"自强","competency":"Civic Literacy, Global Awareness & Cross-Cultural Skills"},{"id":"C037","stem":"I am","prompt":"When am I at my best with learning from mentors?","value":"好学","competency":"Critical & Inventive Thinking"},{"id":"C038","stem":"I can","prompt":"What strategy can I try to improve mentoring younger peers?","value":"力行","competency":"Communication, Collaboration & Information Skills"},{"id":"C039","stem":"I have","prompt":"What have I done recently that shows planning events with purpose?","value":"知耻","competency":"Self-Management"},{"id":"C040","stem":"I am","prompt":"In what ways am I growing in sustainable choices?","value":"自强","competency":"Social & Emotional Competence"},{"id":"C041","stem":"I can","prompt":"How can I use feedback to strengthen ethical use of AI/tools?","value":"好学","competency":"Civic Literacy, Global Awareness & Cross-Cultural Skills"},{"id":"C042","stem":"I have","prompt":"When have I used resolving dilemmas respectfully well?","value":"力行","competency":"Critical & Inventive Thinking"},{"id":"C043","stem":"I am","prompt":"When do I notice advocating for a cause in myself?","value":"知耻","competency":"Communication, Collaboration & Information Skills"},{"id":"C044","stem":"I can","prompt":"How can I get better at measuring outcomes next week?","value":"自强","competency":"Self-Management"},{"id":"C045","stem":"I have","prompt":"What evidence do I have of storytelling for change this month?","value":"好学","competency":"Social & Emotional Competence"},{"id":"C046","stem":"I am","prompt":"When do I notice collaboration with adults in myself?","value":"力行","competency":"Civic Literacy, Global Awareness & Cross-Cultural Skills"},{"id":"C047","stem":"I can","prompt":"How can I use feedback to strengthen networking respectfully?","value":"知耻","competency":"Critical & Inventive Thinking"},{"id":"C048","stem":"I have","prompt":"When have I used documenting learning well?","value":"自强","competency":"Communication, Collaboration & Information Skills"},{"id":"C049","stem":"I am","prompt":"When am I at my best with celebrating community wins?","value":"好学","competency":"Self-Management"},{"id":"C050","stem":"I can","prompt":"How can I apply giving back after success in my next task?","value":"力行","competency":"Social & Emotional Competence"}]};
+
+const state = {
+  flat: [],
+  lastPool: [],
+  lastCard: null,
+};
+
+// Prepare and flatten
+(function init() {
+  const a = EMBEDDED_DATA.academic.map(x => ({...x, domain: 'academic'}));
+  const n = EMBEDDED_DATA.non_academic.map(x => ({...x, domain: 'non_academic'}));
+  const c = EMBEDDED_DATA.cross_domain.map(x => ({...x, domain: 'cross_domain'}));
+  state.flat = [...a, ...n, ...c];
+})();
+
+function choose(arr) {
+  return arr[Math.floor(Math.random()*arr.length)];
+}
+
+function renderCard(card) {
+  const slot = document.getElementById('cardSlot');
+  slot.innerHTML = `
+    <div class="meta">
+      <span class="pill">${card.id}</span>
+      <span class="pill">${card.domain.replace('_',' ')}</span>
+      <span class="pill">${card.stem}</span>
+      <span class="pill">${card.value}</span>
+      <span class="pill">${card.competency}</span>
+    </div>
+    <p class="prompt">${card.prompt}</p>
+  `;
+}
+
+function drawCard() {
+  const domain = document.getElementById('domainSel').value;
+  const stem = document.getElementById('stemSel').value;
+  const val = document.getElementById('valueSel').value;
+  const comp = document.getElementById('compSel').value;
+
+  let pool = state.flat;
+  if (domain !== 'any') pool = pool.filter(x => x.domain === domain);
+  if (stem !== 'any') pool = pool.filter(x => x.stem === stem);
+  if (val !== 'any') pool = pool.filter(x => x.value === val);
+  if (comp !== 'any') pool = pool.filter(x => x.competency === comp);
+
+  state.lastPool = pool;
+
+  if (pool.length === 0) {
+    renderCard({
+      id: '—',
+      domain: '—',
+      stem: '—',
+      value: '—',
+      competency: '—',
+      prompt: 'No cards match these filters. Try relaxing a filter.',
+    });
+    state.lastCard = null;
+    return;
+  }
+
+  const card = choose(pool);
+  state.lastCard = card;
+  renderCard(card);
+}
+
+function clearCard() {
+  document.getElementById('cardSlot').innerHTML = '<p class="empty">Use the controls above and click <b>Draw Card</b> to get a prompt.</p>';
+  state.lastCard = null;
+  state.lastPool = [];
+  document.getElementById('copyMsg').textContent = '';
+}
+
+async function copyPrompt() {
+  const msg = document.getElementById('copyMsg');
+  if (!state.lastCard) {
+    msg.textContent = 'Draw a card first.';
+    return;
+  }
+  const text = `[${state.lastCard.id}] ${state.lastCard.prompt}`;
+  try {
+    await navigator.clipboard.writeText(text);
+    msg.textContent = 'Prompt copied!';
+    setTimeout(() => msg.textContent = '', 1500);
+  } catch (e) {
+    msg.textContent = 'Copy failed. Select and copy manually.';
+  }
+}
+
+document.getElementById('drawBtn').addEventListener('click', drawCard);
+document.getElementById('nextBtn').addEventListener('click', drawCard);
+document.getElementById('clearBtn').addEventListener('click', clearCard);
+document.getElementById('copyBtn').addEventListener('click', copyPrompt);
+</script>
+</body>
+</html>
